@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import style from './App.module.css'
+import Todo from './components/Todo/Todo'
+class App extends React.Component {
+    constructor(){
+      super()
+      this.state = {
+        newTaskVis: true
+      }
+    }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    newTask = () => this.setState((state) => {
+      return { newTaskVis: !state.newTaskVis}
+    })
+
+    render() {
+        return (
+            <div className={style.todo_container}>
+                <Todo visible = {this.state.newTaskVis} visibleCallback = {this.newTask}/>
+                <div className={style.newTask} onClick={this.newTask}>
+                    <span></span>
+                </div>
+            </div>
+        )
+    }
 }
 
-export default App;
+export default App

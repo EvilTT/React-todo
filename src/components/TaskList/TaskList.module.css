@@ -1,0 +1,12 @@
+.tasks{
+    margin: 20px 0px;
+    border-radius: 10px;
+    padding-right: 5px;
+}
+
+.startText{
+    font-size: 30px;
+    text-align: center;
+    color: #BBC2D8;
+}
+
