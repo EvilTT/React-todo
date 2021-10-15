@@ -17,7 +17,7 @@ class App extends React.Component {
         return (
             <div className={style.todo_container}>
                 <Todo visible = {this.state.newTaskVis} visibleCallback = {this.newTask}/>
-                <div className={style.newTask} onClick={this.newTask}>
+                <div className={this.state.newTaskVis ? style.newTask : `${style.newTask} ${style.closeBtn}`} onClick={this.newTask}>
                     <span></span>
                 </div>
             </div>

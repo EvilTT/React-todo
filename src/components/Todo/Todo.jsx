@@ -8,7 +8,7 @@ class Todo extends React.Component {
         super(props)
         this.state = {
             clearAll: false,
-            newTask : []
+            newTask: undefined,
         }
     }
 
@@ -20,27 +20,49 @@ class Todo extends React.Component {
         if (this.state.clearAll) this.setState({ clearAll: false })
     }
 
-    saveNewTask(task){
-        this.setState({newTask: task})
+    saveNewTask = (taskText) => {
+        let numberKey = (Math.random() * taskText.length).toFixed(7)
+        this.setState({
+            newTask: {
+                key: numberKey.toString(),
+                text: taskText,
+            },
+        })
+        this.props.visibleCallback()
     }
+
+    clearNewTast = () => this.setState({ newTask: undefined })
 
     render() {
         return (
             <div className={style.todo}>
                 <div className={style.wrapper}>
                     <div>
-                        <div className={style.title}>{this.props.visible ? "Todo's Tasks" : 'Create a new note'}</div>
+                        <div className={style.title}>
+                            {this.props.visible
+                                ? "Todo's Tasks"
+                                : 'Create a new note'}
+                        </div>
                         {this.props.visible ? (
-                            <TaskList isClearAll={this.state.clearAll} newTask={this.state.newTask}/>
+                            <TaskList
+                                isClearAll={this.state.clearAll}
+                                newTask={this.state.newTask}
+                                clearNewTask={this.clearNewTast}
+                            />
                         ) : (
-                            <NewTask visibleCallback = {this.props.visibleCallback}/>
+                            <NewTask saveTask={this.saveNewTask} />
                         )}
                     </div>
-                    {this.props.visible ? <div 
-                    className={style.clear}
-                    onClick={this.clearAllClick}>
-                        Clear all
-                    </div> : ''}
+                    {this.props.visible ? (
+                        <div
+                            className={style.clear}
+                            onClick={this.clearAllClick}
+                        >
+                            Clear all
+                        </div>
+                    ) : (
+                        ''
+                    )}
                 </div>
             </div>
         )

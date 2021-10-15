@@ -20,12 +20,15 @@
     justify-self: center;
     align-items: center;
     cursor: pointer;
+    transition: transform 0.5s;
 }
 
 .newTask span{
     position: relative;
 }
-
+.closeBtn{
+    transform: rotate(45deg);
+}
 .newTask span::after{
     content: '';
     position: absolute;

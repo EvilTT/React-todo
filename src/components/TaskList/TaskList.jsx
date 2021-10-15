@@ -6,19 +6,9 @@ class TaskList extends React.Component {
     constructor() {
         super()
         this.state = {
-            tasks: new Map(
-                Object.entries({
-                    1: '1',
-                    2: '2',
-                    3: '3',
-                    4: '4',
-                    5: '5',
-                    6: '6',
-                    7: '7',
-                    8: '8',
-                    9: '9'
-                })
-            )}
+            tasks: new Map(),
+            refresh: false
+        }
         this.clickToRemoveTask = this.clickToRemoveTask.bind(this)
     }
 
@@ -28,7 +18,7 @@ class TaskList extends React.Component {
             let curTasks = state.tasks
             curTasks.delete(key)
             return {
-                tasks: curTasks,
+                tasks: curTasks
             }
         })
     }
@@ -40,17 +30,33 @@ class TaskList extends React.Component {
         })
     }
 
-    // componentDidMount() {
-    //     window.addEventListener('beforeunload', () => {
-    //         localStorage.setItem(
-    //             'taskList',
-    //             JSON.stringify(Object.fromEntries(this.state.tasks))
-    //         )
-    //     })
+    static getDerivedStateFromProps(props) {
+        return props.newTask ? { refresh: true } : { refresh: false }
+    }
 
-    //     let tasks = JSON.parse(localStorage.getItem('taskList'))
-    //     this.setState({ tasks: new Map(Object.entries(tasks)) })
-    // }
+    componentDidMount() {
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem(
+                'taskList',
+                JSON.stringify(Object.fromEntries(this.state.tasks))
+            )
+        })
+
+        let tasks = JSON.parse(localStorage.getItem('taskList'))
+        if (!tasks) return
+        this.setState({
+            tasks: new Map(Object.entries(tasks)),
+        })
+        if (this.state.refresh) {
+            this.setState((state) => {
+                let newTask = this.props.newTask
+                let newState = state.tasks.set(newTask.key, newTask.text)
+                this.props.clearNewTask()
+                return { tasks: newState }
+            })
+            return
+        }
+    }
 
     componentDidUpdate() {
         if (this.state.tasks.size === 0) {
@@ -58,6 +64,13 @@ class TaskList extends React.Component {
             return
         }
         if (this.props.isClearAll) this.clean()
+    }
+
+    componentWillUnmount(){
+        localStorage.setItem(
+            'taskList',
+            JSON.stringify(Object.fromEntries(this.state.tasks))
+        )
     }
 
     render() {
@@ -80,14 +93,22 @@ class TaskList extends React.Component {
                         })
                     ) : (
                         <div className={style.startText}>
-                            To start using the to-do list, add your first task.
-                            To do this, click on the plus in the lower right
-                            corner. In the window that opens, write a howl
-                            problem and voila!
+                            <p>
+                                To start using the to-do list, add your first
+                                task. To do this, click on the plus in the lower
+                                right corner. In the window that opens, write a
+                                howl problem and voila!{' '}
+                            </p>
+                            <span className={style.develop}>
+                                Made with <span className={style.love}>❤</span>{' '}
+                                by{' '}
+                                <a href='https://github.com/EvilTT?tab=repositories'>
+                                    EvilTT
+                                </a>
+                            </span>
                         </div>
                     )}
                 </div>
-               
             </>
         )
     }
